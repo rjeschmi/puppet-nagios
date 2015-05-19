@@ -36,7 +36,8 @@ class nagios::client (
   $service_use                 = 'generic-service',
   # other
   $plugin_dir                  = $nagios::params::plugin_dir,
-  $selinux                     = true
+  $selinux                     = true,
+  $check_conntrack             = false
 ) inherits ::nagios::params {
 
   # Set the variables to be used, including scoped from elsewhere, based on
@@ -123,7 +124,10 @@ class nagios::client (
   # Old style with facts overrides
   class { '::nagios::defaultchecks': }
   # New style with hiera overrides
-  class { '::nagios::check::conntrack': }
+
+  if $check_conntrack {
+    class { '::nagios::check::conntrack': }
+  }
   class { '::nagios::check::cpu': }
   class { '::nagios::check::load': }
   class { '::nagios::check::ntp_time': }
